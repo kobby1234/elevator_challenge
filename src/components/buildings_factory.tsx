@@ -2,14 +2,37 @@ import React from "react";
 import * as Styles from "./building_factory.ts";
 import Building from "./building.tsx";
 
-interface State {
+abstract class Creator {
+   
+    public abstract factoryMethod(): Product;
+
+   
+    public someOperation():  JSX.Element {
+        const product = this.factoryMethod();
+        return product.render();
+    }
+}
+
+
+class ConcreteCreator1 extends Creator {
+    
+    public factoryMethod(): Product {
+        return new BuildingFactory({});
+    }
+}
+
+interface Product {
+    render(): JSX.Element;
+    
+}
+
+
+type State  = {
     listOfBuilding: number[][]
 }
 
-class BuildingFactory extends React.Component<{},State> {
-    // public static defaultProps = {
-    //     label: 'isFloor'
-    // };
+class BuildingFactory extends React.Component<{},State> implements Product{
+  
 
   constructor(props: any) {
     super(props);
@@ -18,8 +41,8 @@ class BuildingFactory extends React.Component<{},State> {
 
       };
       
-    // this.shouldComponentUpdate
 }
+   
 renderBuildings = () =>{
     return this.state.listOfBuilding.map((building, index) => (
         <Building
@@ -46,4 +69,4 @@ renderBuildings = () =>{
 
 }
 
-export default BuildingFactory;
+export default ConcreteCreator1;
