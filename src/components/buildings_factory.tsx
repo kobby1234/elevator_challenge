@@ -50,7 +50,7 @@ renderBuildings = () =>{
             key={index}
             numberOfElevators={building[1]}
             numberOfFloors={building[0]}
-            
+    
         />
             
     
