@@ -2,15 +2,32 @@ import React  from "react";
 import * as Styles from "./alevator.ts";
 import elvImage from "../images/elv.png";
 
-// interface ICounterProps {
-//     top?: number
 
-// }
+interface PropsCreator{
+    floorNumber: number;
+    elevatorId: number;
+    isId: number;
+  //   handelRemovingFloor: (id: number) => void;
+    modifyCurrentElevator: (floor: number, elvId:number) => void; 
+  }
+class ElevatorCreator extends  React.Component<PropsCreator>  {
+   
+    
+    render() {
+        return<>
+        <Elevator 
+            floorNumber={this.props.floorNumber}
+            elevatorId={this.props.elevatorId}
+            isId={this.props.isId}
+            modifyCurrentElevator={this.props.modifyCurrentElevator}
+            />
+        </>
+    }
+}
 interface State {
   top: number;
   floorNumber: number;
   currentFloor: number;
-//   listOfOrderedFloors: number[];
   elevatorId: number;
   speed: number;
   distance: number;
@@ -18,7 +35,7 @@ interface State {
   isDirection: boolean
   
 }
-interface IProps {
+interface PropsElevator {
   floorNumber: number;
   elevatorId: number;
   isId: number;
@@ -26,17 +43,13 @@ interface IProps {
   modifyCurrentElevator: (floor: number, elvId:number) => void; 
 }
 
-class Elevator extends React.Component<IProps, State> {
-  //     // public static defaultProps = {
-  //     //     label: 'isFloor'
-  //     // };
+class Elevator extends React.Component<PropsElevator, State> {
 
   constructor(props: any) {
     super(props);
     this.state = {
       top: 10,
       floorNumber: 0,
-    //   listOfOrderedFloors: [0],
       currentFloor: 0,
       elevatorId: this.props.elevatorId,
       speed: 1,
@@ -46,7 +59,7 @@ class Elevator extends React.Component<IProps, State> {
     };
   }
 
-    componentDidUpdate(prevProps: IProps, prevState: State) {
+    componentDidUpdate(prevProps: PropsElevator) {
         // Check if the floorNumber prop has changed
         // console.log("console.log(",this.props.floorNumber,prevProps.floorNumber,"##",this.state.elevatorId,this.props.isId)
         if (
@@ -56,33 +69,7 @@ class Elevator extends React.Component<IProps, State> {
             this.handleClick();
             }
     
-        // Check if distance has changed
-        // console.log("if (this.state.distance !== prevState.distance && this.state.elevatorId === this.props.isId)",
-        // this.state.distance,"!==",prevState.distance,"##",this.state.elevatorId,"===",this.props.isId)
-        // if (this.state.distance !== prevState.distance && this.state.elevatorId === this.props.isId) {
-        //     const numberOfActivations:number = this.state.distance;
-        //     const delayBetweenActivations:number = 500;
-        //     let activationsLeft:number = numberOfActivations;
-        //     let currentFloor:number = this.state.prevFloor
-        //     const activateWithDelay = () => {
-        //         if (activationsLeft > 0) {
-        //         // Call your function here
-        //         if(this.state.isDirection){
-        //             currentFloor++
-        //         }
-        //         else{
-        //             currentFloor--
-        //         }
-        //         console.log("currentFloor",currentFloor)
-        //         this.props.modifyCurrentElevator(currentFloor, this.state.elevatorId);
-        
-        //         activationsLeft--;
-        //         setTimeout(activateWithDelay, delayBetweenActivations);
-        //         }
-        //     };
-        
-        //     setTimeout(activateWithDelay, delayBetweenActivations);
-        //     }
+       
     }
   
     activeModifyCurrentElevator = (distance: number) => {
@@ -135,7 +122,7 @@ class Elevator extends React.Component<IProps, State> {
     
     this.setState({
         top: newTop,
-        currentFloor: this.props.floorNumber, // Remove the first element
+        currentFloor: this.props.floorNumber, 
         distance: distance
     });
     this.activeModifyCurrentElevator(distance)
@@ -159,4 +146,4 @@ class Elevator extends React.Component<IProps, State> {
   }
 }
 
-export default Elevator;
+export default ElevatorCreator;

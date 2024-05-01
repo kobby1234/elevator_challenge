@@ -1,6 +1,6 @@
 import React from "react";
 import * as Styles from "./building_factory.ts";
-import Building from "./building.tsx";
+import BuildingCreator from "./building.tsx";
 
 abstract class Creator {
    
@@ -35,9 +35,10 @@ class BuildingFactory extends React.Component<{},State> implements Product{
   
 
   constructor(props: any) {
+    // const number_elv = 100
     super(props);
       this.state = {
-        listOfBuilding:[[10,3],[9,3]],
+        listOfBuilding:[[10,4],[8,4]],
 
       };
       
@@ -45,7 +46,7 @@ class BuildingFactory extends React.Component<{},State> implements Product{
    
 renderBuildings = () =>{
     return this.state.listOfBuilding.map((building, index) => (
-        <Building
+        <BuildingCreator
             key={index}
             numberOfElevators={building[1]}
             numberOfFloors={building[0]}

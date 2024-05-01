@@ -1,20 +1,34 @@
 import React from "react";
-import Floor from "./floor.tsx";
+import ConcreteCreator1 from "./floor.tsx";
 import * as Styles from "./building.ts";
-import Elevator from "./alevator.tsx";
+import ElevatorCreator from "./alevator.tsx";
 import { Dict } from "styled-components/dist/types";
 const soundFilePath: string = require("../images/ding.mp3") as string;
 const audio = new Audio(soundFilePath);
 
+interface PropsCreator {
+    numberOfFloors: number;
+    numberOfElevators: number;
+}
+class BuildingCreator extends  React.Component<PropsCreator>  {
+    render() {
+        return<>
+        <Building 
+            numberOfFloors ={this.props.numberOfFloors}
+            numberOfElevators ={ this.props.numberOfElevators}
+            />
+        </>
+    }
+}
 interface Props {
     numberOfFloors: number;
     numberOfElevators: number;
 }
-
 interface State {
-  // floorNumber: boolean[];
   numbers: Dict[];
   numberOfElevator: number[];
+//   listOfElevators_2: number[][];
+
   listOfElevators: number[][];
   orderedFloor: number;
   elevatorId: number;
@@ -37,7 +51,6 @@ class Building extends React.Component<Props, State> {
     );
 
     this.state = {
-      // floorNumber: initialFloorNumber,
       numbers: initialNumber.map((key, index) => ({
         [key]: initialFloorNumber[index],
       })),
@@ -53,19 +66,13 @@ class Building extends React.Component<Props, State> {
       floorTimer: 0,
     };
 
-    // console.log("this.state.listOfElevators", this.state.listOfElevators);
-    // console.log("this.state.numbers", this.state.numbers);
-    // this.state.numbers.map((floor, index) =>(
-    //     console.log("##",Number(Object.keys(floor)[0]))
-    // ))
-
-    
   }
 
   renderFloors = () => {
     
     return this.state.numbers.map((floor, index) => (
-      <Floor
+        // const floor = new 
+      <ConcreteCreator1
         key={index}
         floorId={Number(Object.keys(floor)[0])}
         isId = {this.state.floorId}
@@ -79,20 +86,24 @@ class Building extends React.Component<Props, State> {
   };
   renderElevator = () => {
     return this.state.numberOfElevator.map((index) => (
-      <Elevator
+      <ElevatorCreator
         key={index}
         floorNumber={this.state.orderedFloor}
         elevatorId={index}
         isId={this.state.elevatorId}
-        // handelRemovingFloor={this.removeFloorFromLIst}
         modifyCurrentElevator={this.modifyCurrentElevator}
       />
     ));
   };
+
   orderElevator = (floor: number): void => {
+    let listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
     let isFloorAlreadyOrdered: boolean = false
-    for (var i = 0; i < this.state.listOfElevators.length; i++) {
-        if (this.state.listOfElevators[i].includes(floor)){
+    for (var i = 0; i < listOfElevators.length; i++) {
+        if(listOfElevators[i].length>1){
+            listOfElevators[i].shift() 
+        }
+        if (listOfElevators[i].includes(floor)){
             isFloorAlreadyOrdered = true
           break;
         }
@@ -107,12 +118,14 @@ class Building extends React.Component<Props, State> {
     modifyCurrentElevator = async(floor: number, elvId:number) => {
         console.log("floor",floor,"this.state.listOfElevators[elvId][1]",this.state.listOfElevators[elvId][1])
         if(floor === this.state.listOfElevators[elvId][1]){
+            // const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators_2));
+            //     listOfElevators[elvId].shift()
+            //     this.setState({listOfElevators_2: listOfElevators})
             audio.pause();
             audio.currentTime = 0;
             audio.play()
             setTimeout(() => {
                 
-    
                 this.setState({floorColor: false, floorId: floor})
                 const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
                 listOfElevators[elvId].shift()
@@ -124,8 +137,8 @@ class Building extends React.Component<Props, State> {
                 console.log("this.state.listOfElevators[elvId].length",this.state.listOfElevators[elvId].length,"##",this.state.listOfElevators[elvId][2])
                 if(this.state.listOfElevators[elvId].length > 2){
                     this.setState({ elevatorId: elvId, orderedFloor: this.state.listOfElevators[elvId][2]});
-                }
-            }, 2000) 
+                    }
+                }, 2000) 
         }
         else{
             const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
@@ -160,7 +173,7 @@ class Building extends React.Component<Props, State> {
         const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
         listOfElevators[elevatorIndex].push(floor);
         this.setState({
-          listOfElevators: listOfElevators
+          listOfElevators: listOfElevators,
         });
       }
       console.log(" if(this.state.listOfElevators[elevatorIndex].length < 3)",this.state.listOfElevators[elevatorIndex])
@@ -174,13 +187,9 @@ class Building extends React.Component<Props, State> {
   render() {
     return (
       <Styles.Container>
-          
               <Styles.Building >
                     {this.renderFloors()}
                     </Styles.Building>
-                
-        
-       
         <Styles.ElevatorsWrapper>
                 {this.renderElevator()}
             </Styles.ElevatorsWrapper>
@@ -189,4 +198,4 @@ class Building extends React.Component<Props, State> {
   }
 }
 
-export default Building;
+export default BuildingCreator;

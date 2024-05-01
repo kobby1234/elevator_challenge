@@ -1,53 +1,84 @@
 import * as Styles from "./floor.ts";
 import React from "react";
+import { Dict } from "styled-components/dist/types";
 
-interface ICounterProps {
+// abstract class Creator {
+//     public abstract factoryMethod(props: ICounterProps): Product;
+
+//     public someOperation(props: ICounterProps): JSX.Element {
+//         const product = this.factoryMethod(props);
+//         return product.render();
+//     }
+// }
+
+
+interface PropsCreator {
     isFloor: boolean
     floorNumber: number
     floorId: number
     isColor: boolean
     isId: number
     timer: number
-    
     orderElevator: (floor: number ) => void
     
 }
-interface State {
+
+class ConcreteCreator1 extends  React.Component<PropsCreator>  {
+   
+    render() {
+        return<>
+        <Floor 
+         floorId={this.props.floorNumber}
+         isId = {this.props.isId}
+         isColor = {this.props.isColor}
+         isFloor={this.props.isFloor}
+         floorNumber={this.props.floorNumber}
+         orderElevator={this.props.orderElevator}
+         timer={this.props.timer} 
+            />
+        </>
+    }
+}
+
+// interface Product {
+//     render(): JSX.Element;
+
+    
+// }
+
+interface PropsFloor {
+    isFloor: boolean
+    floorNumber: number
+    floorId: number
+    isColor: boolean
+    isId: number
+    timer: number
+    orderElevator: (floor: number ) => void
+}
+interface State  {
     isColor: boolean
     floorId: number
     currentTimer: number
     intervalId : NodeJS.Timer | undefined
 }
 
-class Floor extends React.Component<ICounterProps, State> {
-    // public static defaultProps = {
-    //     label: 'isFloor'
-    // };
+class Floor extends React.Component<PropsFloor, State>  {
+ 
 
-  constructor(props: ICounterProps) {
+  constructor(props: PropsFloor) {
     super(props);
       this.state = {
         isColor: false,
-        floorId: this.props.floorId,
+        floorId:  props.floorId,
         currentTimer: 0,
         intervalId: undefined,
 
       };
       console.log(this.props.isFloor)
-    // this.shouldComponentUpdate
   }
-//   componentDidUpdate(): void {
-//     console.log("$$$$$$$$$$$$$4",this.state.isColor,this.props.isColor
-//         ,this.state.floorId,this.props.floorId
-//     )
-//     if(this.state.isColor !== this.props.isColor && this.state.floorId === this.props.isId){
-//         this.setState({isColor: this.props.isColor, currentTimer: this.props.timer})
-//         this.countingDown()
-//       }
-//   }
-componentDidUpdate(prevProps: ICounterProps): void {
 
-    // Check if isColor and floorId have changed and the countdown isn't already running
+componentDidUpdate(): void {
+    console.log(this.state.isColor , this.props.isColor,"if (this.state.isColor !== this.props.isColor && this.state.floorId === this.props.isId")
     if (this.state.isColor !== this.props.isColor && this.state.floorId === this.props.isId
     ) {
         console.log("hahahahahhahahah")
@@ -85,85 +116,6 @@ activeModifyCurrentElevator =  () => {
         // this.setState({ currentTimer: 0 });
 }
 
-// componentWillUnmount() {
-//     // Clear the interval when the component is unmounted to avoid memory leaks
-//     if (this.state.intervalId) {
-//         clearInterval(this.state.intervalId);
-//     }
-// }
-
-// countingDown = (): void => {
-//     if (this.state.intervalId) return; // Prevent multiple intervals
-
-//     const interval = setInterval(this.isInterval, 1000);
-//     this.setState({ intervalId: interval });
-// };
-
-// isInterval = (): void => {
-//     this.setState((prevState) => ({
-//         currentTimer: prevState.currentTimer - 1,
-//     }), () => {
-//         if (this.state.currentTimer === 0) {
-//             clearInterval(this.state.intervalId);
-//             // Optionally, you can reset the timer when it reaches 0
-//             // this.setState({ currentTimer: this.props.timer });
-//         }
-//     });
-// };
-// activeModifyCurrentElevator = () => {
-    
-//         const delayBetweenActivations:number = 1000;
-//         let activationsLeft:number = this.props.timer;
-//         const activateWithDelay = () => {
-//             console.log("let activationsLeft:number = this.props.timer;",activationsLeft)
-//             if (activationsLeft > 0) {
-//             // Call your function here
-//             activationsLeft --;
-//             this.setState({currentTimer: activationsLeft})
-            
-    
-//             setTimeout(activateWithDelay, delayBetweenActivations);
-//             }else{
-//             console.log("###################################3")
-//             this.setState({currentTimer: 0})
-//             }
-//         };
-    
-//         setTimeout(activateWithDelay, delayBetweenActivations);
-// }
-//   countingDown =():void =>{
-//     // if (this.state.intervalId) return;
-
-//     const interval = setInterval(this.isInterval,1000)
-//     this.setState({intervalId: interval})
-//   }
-//   isInterval =(): void =>{
-//     if (this.state.currentTimer > 0) {
-        
-//         this.setState((prevState) => ({
-//             currentTimer: prevState.currentTimer - 1,
-//         }));
-//     } else {
-        
-//         clearInterval(this.state.intervalId);
-//         // this.setState({intervalId: undefined})
-//     }
-// };
-// countingDown = (): void => {
-//     const intervalId = setInterval(() => {
-//         this.setState(prevState => ({
-//             currentTimer: prevState.currentTimer - 1
-//         }), () => {
-//             if (this.state.currentTimer === 0) {
-//                 clearInterval(intervalId);
-//             }
-//         });
-//     }, 1000);
-// };
-
-
-
-
 
   
   render() {
@@ -199,4 +151,4 @@ activeModifyCurrentElevator =  () => {
 
 }
 
-export default Floor;
+export default ConcreteCreator1;

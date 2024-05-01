@@ -17,12 +17,7 @@ export const Floor =styled.div`
   background-position: 0px 2px, 4px 35px, 29px 31px, 34px 6px;
   height: 103px;
   width: 200px;
-  /* border: 5px solid black; */
-
-  /* position: fixed; */
   
-  /* border:70px black; */
-
 `
 export const TopOfTheFloor = styled.div`
   background-color: #000000;
