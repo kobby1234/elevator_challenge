@@ -1,82 +1,90 @@
 import React from "react";
 import ConcreteCreator1 from "./floor.tsx";
 import * as Styles from "./building.ts";
-import ElevatorCreator from "./alevator.tsx";
+import ElevatorCreator from "./elevator.tsx";
 import { Dict } from "styled-components/dist/types";
-const soundFilePath: string = require("../images/ding.mp3") as string;
-const audio = new Audio(soundFilePath);
+// const soundFilePath: string = "./ding.mp3"
+// const audio = new Audio("./ding.mp3");
 
 interface PropsCreator {
-    numberOfFloors: number;
-    numberOfElevators: number;
+  numberOfFloors: number;
+  numberOfElevators: number;
 }
-class BuildingCreator extends  React.Component<PropsCreator>  {
-    render() {
-        return<>
-        <Building 
-            numberOfFloors ={this.props.numberOfFloors}
-            numberOfElevators ={ this.props.numberOfElevators}
-            />
-        </>
-    }
+class BuildingCreator extends React.Component<PropsCreator> {
+  render() {
+    return (
+      <>
+        <Building
+          numberOfFloors={this.props.numberOfFloors}
+          numberOfElevators={this.props.numberOfElevators}
+        />
+      </>
+    );
+  }
 }
 interface Props {
-    numberOfFloors: number;
-    numberOfElevators: number;
+  numberOfFloors: number;
+  numberOfElevators: number;
 }
 interface State {
   numbers: Dict[];
   numberOfElevator: number[];
-//   listOfElevators_2: number[][];
-
   listOfElevators: number[][];
   orderedFloor: number;
   elevatorId: number;
   floorColor: boolean;
   floorId: number;
-  floorTimer: number
+  floorTimer: number;
+  audio: HTMLAudioElement;
 }
 
 class Building extends React.Component<Props, State> {
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
-    const numberOfElevators = this.props.numberOfElevators;
-    const length = this.props.numberOfFloors;
-    const initialFloorNumber = Array.from({ length: length }, (_, index) =>
-      index === 0 || index === length ? false : true
-    );
-    const initialNumber = Array.from(
-      { length },
-      (_, index) => length - index - 1
-    );
-
+    const floorList: Dict[] = this.createListOfFloors();
     this.state = {
-      numbers: initialNumber.map((key, index) => ({
-        [key]: initialFloorNumber[index],
-      })),
+      numbers: floorList,
       numberOfElevator: Array.from(
-        { length: numberOfElevators },
+        { length: this.props.numberOfElevators },
         (_, index) => index
       ),
-      listOfElevators: Array.from({ length: numberOfElevators }, () => [0]),
+      listOfElevators: Array.from(
+        { length: this.props.numberOfElevators },
+        () => [0]
+      ),
       orderedFloor: 0,
       elevatorId: 0,
       floorColor: false,
       floorId: -1,
       floorTimer: 0,
+      audio: new Audio("./ding.mp3"),
     };
-
   }
+  private createListOfFloors = (): Dict[] => {
+    // const elevators = this.props.numberOfElevators;
+    const floors = this.props.numberOfFloors;
+    const initialFloorNumber: boolean[] = Array.from(
+      { length: floors },
+      (_, index) => !(index === 0 || index === floors)
+    );
+    const initialNumber = Array.from(
+      { length: floors },
+      (_, index) => floors - index - 1
+    );
+    const floorList: Dict[] = initialNumber.map((key, index) => ({
+      [key]: initialFloorNumber[index],
+    }));
+
+    return floorList;
+  };
 
   renderFloors = () => {
-    
     return this.state.numbers.map((floor, index) => (
-        // const floor = new 
       <ConcreteCreator1
         key={index}
         floorId={Number(Object.keys(floor)[0])}
-        isId = {this.state.floorId}
-        isColor = {this.state.floorColor}
+        isId={this.state.floorId}
+        isColor={this.state.floorColor}
         isFloor={floor[Object.keys(floor)[0]]}
         floorNumber={Number(Object.keys(floor)[0])}
         orderElevator={this.orderElevator}
@@ -91,108 +99,126 @@ class Building extends React.Component<Props, State> {
         floorNumber={this.state.orderedFloor}
         elevatorId={index}
         isId={this.state.elevatorId}
-        modifyCurrentElevator={this.modifyCurrentElevator}
+        modifyCurrentElevator={this.manageElevatorQueue}
       />
     ));
   };
 
-  orderElevator = (floor: number): void => {
-    let listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
-    let isFloorAlreadyOrdered: boolean = false
-    for (var i = 0; i < listOfElevators.length; i++) {
-        if(listOfElevators[i].length>1){
-            listOfElevators[i].shift() 
-        }
-        if (listOfElevators[i].includes(floor)){
-            isFloorAlreadyOrdered = true
-          break;
-        }
-      }
-    if(!isFloorAlreadyOrdered){
-        let seconds = this.algorithm(floor);
-        this.setState({floorColor: true, floorId: floor, floorTimer: seconds});
-        console.log("RRRRRRRRRRRR",this.state.listOfElevators)
+  public orderElevator = (floor: number): void => {
+    const isFloorAlreadyOrdered: boolean = this.isFloorOrdered(floor);
+    if (!isFloorAlreadyOrdered) {
+      let seconds = this.manageElevatorOrder(floor);
+      this.setState({ floorColor: true, floorId: floor, floorTimer: seconds });
     }
   };
-  
-    modifyCurrentElevator = async(floor: number, elvId:number) => {
-        console.log("floor",floor,"this.state.listOfElevators[elvId][1]",this.state.listOfElevators[elvId][1])
-        if(floor === this.state.listOfElevators[elvId][1]){
-            // const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators_2));
-            //     listOfElevators[elvId].shift()
-            //     this.setState({listOfElevators_2: listOfElevators})
-            audio.pause();
-            audio.currentTime = 0;
-            audio.play()
-            setTimeout(() => {
-                
-                this.setState({floorColor: false, floorId: floor})
-                const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
-                listOfElevators[elvId].shift()
-                this.setState({
-                listOfElevators: listOfElevators
-                }, () => {
-                    console.log("modifyCurrentEl", this.state.listOfElevators);
-                });
-                console.log("this.state.listOfElevators[elvId].length",this.state.listOfElevators[elvId].length,"##",this.state.listOfElevators[elvId][2])
-                if(this.state.listOfElevators[elvId].length > 2){
-                    this.setState({ elevatorId: elvId, orderedFloor: this.state.listOfElevators[elvId][2]});
-                    }
-                }, 2000) 
-        }
-        else{
-            const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
-            listOfElevators[elvId][0] = floor;
-            this.setState({
-                listOfElevators: listOfElevators
-            }, () => {
-                console.log("modifyCurrentElevator", this.state.listOfElevators);
-            });
-        }
-    }
 
-  algorithm = (floor: number): number => {
+  public manageElevatorQueue = (floor: number, elvId: number) => {
+    // if elevator arrived to the floor
+    if (floor === this.state.listOfElevators[elvId][1]) {
+      this.playAudio();
+      setTimeout(() => {
+        this.setState({ floorColor: false, floorId: floor });
+        this.removeFloorFromQueue(elvId);
+        // if there is  a floor waiting
+        if (this.state.listOfElevators[elvId].length > 2) {
+          this.sendElevator(elvId, this.state.listOfElevators[elvId][2]);
+        }
+      }, 2000);
+    } else {
+      this.updateElevatorPosition(elvId, floor);
+    }
+  };
+
+  private manageElevatorOrder = (floor: number): number => {
+    const [elevatorId, speed]: number[] = this.chooseElevator(floor);
+    this.addFloorToQueue(floor, elevatorId);
+    if (this.state.listOfElevators[elevatorId].length < 2) {
+      this.sendElevator(elevatorId, floor);
+    }
+    return speed;
+  };
+
+  private isFloorOrdered = (floor: number): boolean => {
+    let listOfElevators: number[][] = JSON.parse(
+      JSON.stringify(this.state.listOfElevators)
+    );
+    let isFloorAlreadyOrdered: boolean = false;
+    for (var index = 0; index < listOfElevators.length; index++) {
+      if (listOfElevators[index].length > 1) {
+        listOfElevators[index].shift();
+      }
+      if (listOfElevators[index].includes(floor)) {
+        isFloorAlreadyOrdered = true;
+        break;
+      }
+    }
+    return isFloorAlreadyOrdered;
+  };
+  private chooseElevator = (floor: number): number[] => {
     let minimum: number = 1000;
     let elevatorIndex: number = -1;
-    let copyList: number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators))
+    let copyList: number[][] = JSON.parse(
+      JSON.stringify(this.state.listOfElevators)
+    );
     let isMinimum: number = 0;
     copyList.map((elv, index) => {
       isMinimum = 0;
       elv.push(floor);
-      for (let i = 0; i < elv.length - 1; i++) {
-        isMinimum += (Math.abs(elv[i] - elv[i + 1]) ) * 1 / 2;
-      }if(elv.length > 2){
-        isMinimum += (elv.length - 2) * 2
+
+      for (let index = 0; index < elv.length - 1; index++) {
+        isMinimum += (Math.abs(elv[index] - elv[index + 1]) * 1) / 2;
+      }
+      if (elv.length > 2) {
+        isMinimum += (elv.length - 2) * 2;
       }
       if (isMinimum < minimum) {
         minimum = isMinimum;
         elevatorIndex = index;
       }
     });
-    if (elevatorIndex !== -1) {
-        const listOfElevators:number[][] = JSON.parse(JSON.stringify(this.state.listOfElevators));
-        listOfElevators[elevatorIndex].push(floor);
-        this.setState({
-          listOfElevators: listOfElevators,
-        });
-      }
-      console.log(" if(this.state.listOfElevators[elevatorIndex].length < 3)",this.state.listOfElevators[elevatorIndex])
-          console.log("minimum",minimum)
-      if(this.state.listOfElevators[elevatorIndex].length < 2){
-           this.setState({ elevatorId: elevatorIndex, orderedFloor: floor});
-      }
-   return minimum
+    return [elevatorIndex, minimum];
   };
-  
+  private addFloorToQueue = (floor: number, elevatorIndex: number): void => {
+    const listOfElevators: number[][] = JSON.parse(
+      JSON.stringify(this.state.listOfElevators)
+    );
+    listOfElevators[elevatorIndex].push(floor);
+    this.setState({
+      listOfElevators: listOfElevators,
+    });
+  };
+  private removeFloorFromQueue = (elevatorIndex: number): void => {
+    const listOfElevators: number[][] = JSON.parse(
+      JSON.stringify(this.state.listOfElevators)
+    );
+    listOfElevators[elevatorIndex].shift();
+    this.setState({ listOfElevators: listOfElevators });
+  };
+
+  sendElevator = (elevatorIndex: number, floor: number): void => {
+    this.setState({ elevatorId: elevatorIndex, orderedFloor: floor });
+  };
+
+  private updateElevatorPosition = (elvId: number, floor: number): void => {
+    const listOfElevators: number[][] = JSON.parse(
+      JSON.stringify(this.state.listOfElevators)
+    );
+    listOfElevators[elvId][0] = floor;
+    this.setState({ listOfElevators: listOfElevators });
+  };
+  private playAudio = (): void => {
+    this.state.audio.pause();
+    this.state.audio.currentTime = 0;
+    this.state.audio.play();
+  };
+
   render() {
     return (
       <Styles.Container>
-              <Styles.Building >
-                    {this.renderFloors()}
-                    </Styles.Building>
+        <Styles.Building>{this.renderFloors()}</Styles.Building>
         <Styles.ElevatorsWrapper>
-                {this.renderElevator()}
-            </Styles.ElevatorsWrapper>
+          {this.renderElevator()}
+        </Styles.ElevatorsWrapper>
       </Styles.Container>
     );
   }

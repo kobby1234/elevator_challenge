@@ -3,11 +3,10 @@ import styled from "styled-components";
 export const FloorWrapper = styled.div`
   display: flex;
   
-  /* justify-content: space-around; */
-  /* left: 1x; */
+  
 
 `
-export const Floor =styled.div`
+export const Floor = styled.div`
   background-color: silver;
   background-image: linear-gradient(335deg, #b00 23px, transparent 23px), 
                     linear-gradient(155deg, #d00 23px, transparent 23px), 
@@ -26,7 +25,7 @@ export const TopOfTheFloor = styled.div`
   /* left: 20px; */
 `
 
-export const CallControl = styled.button<{isColor: boolean}>`
+export const FloorButton = styled.button<{isColor: boolean}>`
   /* display: flex; */
   margin-left: 52px;
   margin-top: 15px;
@@ -51,7 +50,8 @@ export const Timer = styled.div`
     color: black;
     position: absolute;
     margin-left: 210px;
-    /* border: 1px solid black; */
+    font-size: 30px;
+    font: bold;
     margin-top: 35px;
     justify-content: center;
 `
