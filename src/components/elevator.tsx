@@ -1,14 +1,8 @@
 import React from "react";
 import * as Styles from "./elevator.ts";
 
-interface PropsElevator {
-  floorNumber: number;
-  elevatorId: number;
-  isId: number;
-  modifyCurrentElevator: (floor: number, elvId: number) => void;
-}
-class ElevatorCreator extends React.Component<PropsElevator> {
-  render() {
+class ElevatorCreator extends React.Component<ElevatorProps> {
+  render(): JSX.Element {
     return (
       <>
         <Elevator
@@ -21,17 +15,22 @@ class ElevatorCreator extends React.Component<PropsElevator> {
     );
   }
 }
+interface ElevatorProps {
+  floorNumber: number;
+  elevatorId: number;
+  isId: number;
+  modifyCurrentElevator: (floor: number, elvId: number) => void;
+}
 interface State {
   top: number;
   floorNumber: number;
   currentFloor: number;
   elevatorId: number;
   speed: number;
-  prevFloor: number;
   isDirection: boolean;
 }
 
-class Elevator extends React.Component<PropsElevator, State> {
+class Elevator extends React.Component<ElevatorProps, State> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -41,13 +40,10 @@ class Elevator extends React.Component<PropsElevator, State> {
       elevatorId: this.props.elevatorId,
       speed: 1,
       isDirection: true,
-      prevFloor: 0,
     };
   }
 
-  componentDidUpdate(prevProps: PropsElevator) {
-    // Check if the floorNumber prop has changed
-    // console.log("console.log(",this.props.floorNumber,prevProps.floorNumber,"##",this.state.elevatorId,this.props.isId)
+  componentDidUpdate(prevProps: ElevatorProps): void {
     if (
       this.props.floorNumber !== prevProps.floorNumber &&
       this.state.elevatorId === this.props.isId
@@ -57,29 +53,22 @@ class Elevator extends React.Component<PropsElevator, State> {
   }
 
   private elevatorManager = (): void => {
-    // const prevTop: number = this.state.top;
     const distance: number = this.movesElevator();
     this.modifyElevatorLocation(distance);
-    // console.log("speed of id", this.state.elevatorId, "  ", this.state.speed);
   };
 
-  modifyElevatorLocation = (distance: number) => {
+  public modifyElevatorLocation = (distance: number): void => {
     const delayBetweenActivations: number = 500;
     let activationsLeft: number = distance;
     let currentFloor: number = this.state.currentFloor;
-    // console.log(
-    //   "numberOfActivations",
-    //   activationsLeft,
-    //   this.state.currentFloor
-    // );
-    const activateWithDelay = () => {
+
+    const activateWithDelay = (): void => {
       if (activationsLeft > 0) {
         if (this.state.isDirection) {
           currentFloor++;
         } else {
           currentFloor--;
         }
-        // console.log("currentFloor", currentFloor, this.state.prevFloor);
         this.props.modifyCurrentElevator(currentFloor, this.state.elevatorId);
         activationsLeft--;
         setTimeout(activateWithDelay, delayBetweenActivations);
@@ -89,16 +78,13 @@ class Elevator extends React.Component<PropsElevator, State> {
   };
 
   private movesElevator = (): number => {
-    const num1: number = this.state.currentFloor;
-    const num2: number = this.props.floorNumber;
+    const floorDeparture: number = this.state.currentFloor;
+    const floorArrival: number = this.props.floorNumber;
     let isDirection: boolean;
-    // console.log("handleClick called with floorNumber:", this.props.floorNumber);
     let newTop: number = this.state.top;
     let distance: number = 0;
-    this.setState({ prevFloor: num1 });
-    // sourcery skip: dont-self-assign-variables
-    distance = Math.abs(num1 - num2);
-    if (num1 < num2) {
+    distance = Math.abs(floorDeparture - floorArrival);
+    if (floorDeparture < floorArrival) {
       isDirection = true;
       newTop -= distance * 110;
     } else {
@@ -115,7 +101,7 @@ class Elevator extends React.Component<PropsElevator, State> {
 
     return distance;
   };
-  render() {
+  render(): JSX.Element {
     return (
       <Styles.Elevator
         src="/elv.png"

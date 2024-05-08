@@ -2,30 +2,17 @@ import React from "react";
 import * as Styles from "./building_factory.ts";
 import BuildingCreator from "./building.tsx";
 
-abstract class Creator {
-  public abstract factoryMethod(): Product;
-
-  public someOperation(): JSX.Element {
-    const product = this.factoryMethod();
-    return product.render();
+class BuildingsFactoryCreator extends React.Component {
+  render(): JSX.Element {
+    return <BuildingsFactory />;
   }
-}
-
-class ConcreteCreator1 extends Creator {
-  public factoryMethod(): Product {
-    return new BuildingFactory({});
-  }
-}
-
-interface Product {
-  render(): JSX.Element;
 }
 
 type State = {
   listOfBuilding: number[][];
 };
 
-class BuildingFactory extends React.Component<{}, State> implements Product {
+class BuildingsFactory extends React.Component<{}, State> {
   constructor(props: any) {
     const floor: number = 1;
     const elevator: number = 1;
@@ -33,13 +20,13 @@ class BuildingFactory extends React.Component<{}, State> implements Product {
     this.state = {
       listOfBuilding: [
         [floor * 10, elevator * 3],
-        [floor * 10, elevator * 4],
-        [floor * 10, elevator * 4],
+        [floor * 6, elevator * 4],
+        // [floor * 10, elevator * 4],
       ],
     };
   }
 
-  renderBuildings = () => {
+  public renderBuildings = (): JSX.Element[] => {
     return this.state.listOfBuilding.map((building, index) => (
       <BuildingCreator
         key={index}
@@ -49,7 +36,7 @@ class BuildingFactory extends React.Component<{}, State> implements Product {
     ));
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <>
         <Styles.Container>{this.renderBuildings()}</Styles.Container>
@@ -58,4 +45,4 @@ class BuildingFactory extends React.Component<{}, State> implements Product {
   }
 }
 
-export default ConcreteCreator1;
+export default BuildingsFactoryCreator;

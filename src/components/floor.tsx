@@ -11,7 +11,7 @@ interface PropsCreator {
   orderElevator: (floor: number) => void;
 }
 
-class ConcreteCreator1 extends React.Component<PropsCreator> {
+class FloorCreator extends React.Component<PropsCreator> {
   render() {
     return (
       <>
@@ -51,11 +51,9 @@ class Floor extends React.Component<PropsFloor, State> {
       floorId: props.floorId,
       currentTimer: 0,
     };
-    // console.log(this.props.isFloor);
   }
 
   componentDidUpdate(): void {
-    // console.log(this.state.isColor , this.props.isColor,"if (this.state.isColor !== this.props.isColor && this.state.floorId === this.props.isId")
     if (
       this.state.isColor !== this.props.isColor &&
       this.state.floorId === this.props.isId
@@ -65,29 +63,25 @@ class Floor extends React.Component<PropsFloor, State> {
         this.modifyTimer();
       }
     }
-    // console.log("Timer",this.state.currentTimer)
   }
 
-   private modifyTimer = () :void =>  {
+  private modifyTimer = (): void => {
     let delay: number = 1000;
     let timerLeft: number = this.props.timer;
-    // recursive function with half a second of delay
     const timerWithDelay = () => {
       if (timerLeft > 0) {
         this.setState({ currentTimer: timerLeft });
-        if(timerLeft === 1/2){delay =  500}
-        timerLeft --;
+        if (timerLeft === 1 / 2) {
+          delay = 500;
+        }
+        timerLeft--;
         setTimeout(timerWithDelay, delay);
-
-      }
-      else {
+      } else {
         this.setState({ currentTimer: 0 });
       }
     };
 
-    timerWithDelay(); // Start the first activation
-
-    // Set the timer to 0 after all activations are done
+    timerWithDelay();
   };
 
   render() {
@@ -136,4 +130,4 @@ class Floor extends React.Component<PropsFloor, State> {
   }
 }
 
-export default ConcreteCreator1;
+export default FloorCreator;
