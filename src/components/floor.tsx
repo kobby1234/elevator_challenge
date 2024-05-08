@@ -1,10 +1,8 @@
-import * as Styles from "./floor.ts";
+import * as Styles from "./floor.style.ts";
 import React from "react";
 
 interface PropsCreator {
-  isFloor: boolean;
   floorNumber: number;
-  floorId: number;
   isColor: boolean;
   isId: number;
   timer: number;
@@ -12,24 +10,21 @@ interface PropsCreator {
 }
 
 class FloorCreator extends React.Component<PropsCreator> {
-  render() {
+  render(): JSX.Element {
     return (
-      <>
         <Floor
           floorId={this.props.floorNumber}
           isId={this.props.isId}
           isColor={this.props.isColor}
-          isFloor={this.props.isFloor}
           floorNumber={this.props.floorNumber}
           orderElevator={this.props.orderElevator}
           timer={this.props.timer}
         />
-      </>
     );
   }
 }
+
 interface PropsFloor {
-  isFloor: boolean;
   floorNumber: number;
   floorId: number;
   isColor: boolean;
@@ -86,46 +81,20 @@ class Floor extends React.Component<PropsFloor, State> {
 
   render() {
     return (
-      <>
-        {!this.props.isFloor ? (
-          <Styles.FloorWrapper>
-            <Styles.Floor>
-              <Styles.FloorButton
-                isColor={this.state.isColor}
-                onClick={() => this.props.orderElevator(this.props.floorNumber)}
-              >
-                {this.props.floorNumber}
-              </Styles.FloorButton>
-            </Styles.Floor>
-            {Boolean(this.state.currentTimer) ? (
-              <Styles.Timer> {this.state.currentTimer}</Styles.Timer>
-            ) : (
-              <></>
-            )}
-          </Styles.FloorWrapper>
-        ) : (
-          <>
-            <Styles.TopOfTheFloor></Styles.TopOfTheFloor>
-            <Styles.FloorWrapper>
-              <Styles.Floor>
-                <Styles.FloorButton
-                  isColor={this.state.isColor}
-                  onClick={() =>
-                    this.props.orderElevator(this.props.floorNumber)
-                  }
-                >
-                  {this.props.floorNumber}
-                </Styles.FloorButton>
-              </Styles.Floor>
-              {Boolean(this.state.currentTimer) ? (
-                <Styles.Timer> {this.state.currentTimer}</Styles.Timer>
-              ) : (
-                <></>
-              )}
-            </Styles.FloorWrapper>
-          </>
-        )}
-      </>
+      <Styles.FloorWrapper>
+        <Styles.Floor>
+          <Styles.FloorButton
+            isColor={this.state.isColor}
+            onClick={() => this.props.orderElevator(this.props.floorNumber)}
+          >
+            {this.props.floorNumber}
+          </Styles.FloorButton>
+        </Styles.Floor>
+
+        <Styles.Timer>
+          {Boolean(this.state.currentTimer) && this.state.currentTimer}
+        </Styles.Timer>
+      </Styles.FloorWrapper>
     );
   }
 }

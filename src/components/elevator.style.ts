@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Elevator = styled.img<{ $top: number ,speed :number}>`
+  display: flex;
   top: ${(props) => props.$top}px;
   position: relative;  
   width: 100px;

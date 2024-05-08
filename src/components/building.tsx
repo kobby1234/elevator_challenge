@@ -1,31 +1,32 @@
 import React from "react";
-import ConcreteCreator1 from "./floor.tsx";
-import * as Styles from "./building.ts";
+import FloorCreator from "./floor.tsx";
+import * as Styles from "./building.style.ts";
 import ElevatorCreator from "./elevator.tsx";
 import { Dict } from "styled-components/dist/types";
 
 class BuildingCreator extends React.Component<BuildingProps> {
-  render() {
+  render(): JSX.Element {
     return (
-      <>
-        <Building
-          numberOfFloors={this.props.numberOfFloors}
-          numberOfElevators={this.props.numberOfElevators}
-        />
-      </>
+      <Building
+        numberOfFloors={this.props.numberOfFloors}
+        numberOfElevators={this.props.numberOfElevators}
+      />
     );
   }
 }
+
 interface BuildingProps {
   numberOfFloors: number;
   numberOfElevators: number;
 }
+
 interface BuildingState {
   elevators: number[];
   queueOfElevators: number[][];
   elevatorId: number;
   orderedFloor: number;
-  floors: Dict[];
+  adjustingElevatorWait: number[];
+  floors: number[];
   floorColor: boolean;
   floorId: number;
   floorTimer: number;
@@ -35,16 +36,23 @@ interface BuildingState {
 class Building extends React.Component<BuildingProps, BuildingState> {
   constructor(props: BuildingProps) {
     super(props);
-    const floorList: Dict[] = this.createListOfFloors();
+    const elevatorsNumber: number = this.props.numberOfElevators 
     this.state = {
-      floors: floorList,
+      floors: Array.from(
+        { length: this.props.numberOfFloors },
+        (_, index) => index 
+      ),
       elevators: Array.from(
-        { length: this.props.numberOfElevators },
+        { length: elevatorsNumber },
         (_, index) => index
       ),
       queueOfElevators: Array.from(
-        { length: this.props.numberOfElevators },
+        { length: elevatorsNumber },
         () => [0]
+      ),
+      adjustingElevatorWait: Array.from(
+        { length: elevatorsNumber },
+        () => 0
       ),
       orderedFloor: 0,
       elevatorId: 0,
@@ -54,33 +62,14 @@ class Building extends React.Component<BuildingProps, BuildingState> {
       audio: new Audio("./ding.mp3"),
     };
   }
-  
-  private createListOfFloors = (): Dict[] => {
-    const floors = this.props.numberOfFloors;
-    const initialFloorNumber: boolean[] = Array.from(
-      { length: floors },
-      (_, index) => !(index === 0 || index === floors)
-    );
-    const initialNumber = Array.from(
-      { length: floors },
-      (_, index) => floors - index - 1
-    );
-    const floorList: Dict[] = initialNumber.map((key, index) => ({
-      [key]: initialFloorNumber[index],
-    }));
-
-    return floorList;
-  };
 
   renderFloors = (): JSX.Element[] => {
     return this.state.floors.map((floor, index) => (
-      <ConcreteCreator1
+      <FloorCreator
         key={index}
-        floorId={Number(Object.keys(floor)[0])}
         isId={this.state.floorId}
         isColor={this.state.floorColor}
-        isFloor={floor[Object.keys(floor)[0]]}
-        floorNumber={Number(Object.keys(floor)[0])}
+        floorNumber={Number(floor)}
         orderElevator={this.orderElevator}
         timer={this.state.floorTimer}
       />
@@ -111,8 +100,16 @@ class Building extends React.Component<BuildingProps, BuildingState> {
     // if elevator arrived at the floor
     if (floor === this.state.queueOfElevators[elvId][1]) {
       this.playAudio();
+      this.adjustingElevatorDistance(elvId);
       setTimeout(() => {
-        this.setState({ floorColor: false, floorId: floor });
+        let copyList: number[] = this.state.adjustingElevatorWait;
+        copyList[elvId] = 0;
+
+        this.setState({
+          floorColor: false,
+          floorId: floor,
+          adjustingElevatorWait: copyList,
+        });
         this.removeFloorFromQueue(elvId);
         // if there is a floor waiting in the queue
         if (this.state.queueOfElevators[elvId].length > 2) {
@@ -127,6 +124,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
   private manageElevatorOrder = (floor: number): number => {
     const [elevatorId, speed]: number[] = this.chooseElevator(floor);
     this.addFloorToQueue(floor, elevatorId);
+    // if there is no other floors waiting
     if (this.state.queueOfElevators[elevatorId].length < 2) {
       this.sendElevator(elevatorId, floor);
     }
@@ -157,13 +155,14 @@ class Building extends React.Component<BuildingProps, BuildingState> {
       JSON.stringify(this.state.queueOfElevators)
     );
     let isMinimum: number = 0;
-    copyList.map((elv, index) => {
+    copyList.forEach((elv, index) => {
       isMinimum = 0;
       elv.push(floor);
 
-      for (let index = 0; index < elv.length - 1; index++) {
-        isMinimum += (Math.abs(elv[index] - elv[index + 1]) * 1) / 2;
+      for (let i = 0; i < elv.length - 1; i++) {
+        isMinimum += (Math.abs(elv[i] - elv[i + 1]) * 1) / 2;
       }
+      isMinimum -= this.state.adjustingElevatorWait[index];
       if (elv.length > 2) {
         isMinimum += (elv.length - 2) * 2;
       }
@@ -172,6 +171,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
         elevatorIndex = index;
       }
     });
+
     return [elevatorIndex, minimum];
   };
 
@@ -210,6 +210,16 @@ class Building extends React.Component<BuildingProps, BuildingState> {
     this.setState({ queueOfElevators: listOfElevators });
   };
 
+  private adjustingElevatorDistance = (elevatorId: number): void => {
+    const iteration = 3;
+    let copyList: number[] = this.state.adjustingElevatorWait;
+    for (let i = 0; i < iteration; i++) {
+      setTimeout(() => {
+        copyList[elevatorId] += 1 / 2;
+        this.setState({ adjustingElevatorWait: copyList });
+      }, 500);
+    }
+  };
   private playAudio = (): void => {
     let audio: HTMLAudioElement = this.state.audio;
     audio.pause();

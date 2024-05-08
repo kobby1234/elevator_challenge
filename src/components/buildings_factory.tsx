@@ -1,6 +1,7 @@
 import React from "react";
-import * as Styles from "./building_factory.ts";
+import * as Styles from "./building_factory.style.ts";
 import BuildingCreator from "./building.tsx";
+import buildingsData from "./buildingSetting.json";
 
 class BuildingsFactoryCreator extends React.Component {
   render(): JSX.Element {
@@ -8,30 +9,34 @@ class BuildingsFactoryCreator extends React.Component {
   }
 }
 
-type State = {
-  listOfBuilding: number[][];
-};
+interface Building {
+  floors: number;
+  elevators: number;
+}
+
+interface State {
+  listOfBuilding: Building[];
+}
 
 class BuildingsFactory extends React.Component<{}, State> {
   constructor(props: any) {
-    const floor: number = 1;
-    const elevator: number = 1;
     super(props);
     this.state = {
-      listOfBuilding: [
-        [floor * 10, elevator * 3],
-        [floor * 6, elevator * 4],
-        // [floor * 10, elevator * 4],
-      ],
+      listOfBuilding: buildingsData,
     };
+  }
+
+  componentDidMount() {
+    // Scroll window down when the component mounts
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   public renderBuildings = (): JSX.Element[] => {
     return this.state.listOfBuilding.map((building, index) => (
       <BuildingCreator
         key={index}
-        numberOfElevators={building[1]}
-        numberOfFloors={building[0]}
+        numberOfElevators={building.elevators}
+        numberOfFloors={building.floors}
       />
     ));
   };

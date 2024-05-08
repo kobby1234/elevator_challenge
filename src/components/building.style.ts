@@ -2,15 +2,15 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 0;
   height: 100%;
   align-self: flex-end;
 `;
+
 export const Building = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-self: flex-end;
-  border: 7px solid black;
   margin-left: 10px;
 `;
 

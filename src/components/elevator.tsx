@@ -1,5 +1,5 @@
 import React from "react";
-import * as Styles from "./elevator.ts";
+import * as Styles from "./elevator.style.ts";
 
 class ElevatorCreator extends React.Component<ElevatorProps> {
   render(): JSX.Element {

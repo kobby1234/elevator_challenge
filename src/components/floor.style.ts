@@ -2,10 +2,8 @@ import styled from "styled-components";
 
 export const FloorWrapper = styled.div`
   display: flex;
-  
-  
+`;
 
-`
 export const Floor = styled.div`
   background-color: silver;
   background-image: linear-gradient(335deg, #b00 23px, transparent 23px), 
@@ -15,20 +13,21 @@ export const Floor = styled.div`
   background-size: 58px 58px;
   background-position: 0px 2px, 4px 35px, 29px 31px, 34px 6px;
   height: 103px;
-  width: 200px;
-  
-`
+  width: 250px;
+  border: solid 3.5px #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const TopOfTheFloor = styled.div`
   background-color: #000000;
   height: 7px;
   width: 200px;
   /* left: 20px; */
-`
+`;
 
 export const FloorButton = styled.button<{isColor: boolean}>`
-  /* display: flex; */
-  margin-left: 52px;
-  margin-top: 15px;
   width: 100px;
   font-size: 4em;
   height: 80px;
@@ -40,18 +39,16 @@ export const FloorButton = styled.button<{isColor: boolean}>`
   color: ${props => (props.isColor ? 'green' : 'black')};
   justify-content: center;
   cursor: pointer;
-`
+`;
 
 export const Timer = styled.div`
     display: flex;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
     color: black;
-    position: absolute;
-    margin-left: 210px;
     font-size: 30px;
     font: bold;
     margin-top: 35px;
     justify-content: center;
-`
+    margin-left: 5px;
+`;
