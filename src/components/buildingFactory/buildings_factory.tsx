@@ -1,6 +1,6 @@
 import React from "react";
 import * as Styles from "./building_factory.style.ts";
-import BuildingCreator from "./building.tsx";
+import BuildingCreator from "../building/building.tsx";
 import buildingsData from "./buildingSetting.json";
 
 class BuildingsFactoryCreator extends React.Component {

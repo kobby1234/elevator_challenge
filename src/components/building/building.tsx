@@ -1,7 +1,7 @@
 import React from "react";
-import FloorCreator from "./floor.tsx";
+import FloorCreator from "../floor/floor.tsx";
 import * as Styles from "./building.style.ts";
-import ElevatorCreator from "./elevator.tsx";
+import ElevatorCreator from "../elevator/elevator.tsx";
 import { Dict } from "styled-components/dist/types";
 
 class BuildingCreator extends React.Component<BuildingProps> {
@@ -36,24 +36,15 @@ interface BuildingState {
 class Building extends React.Component<BuildingProps, BuildingState> {
   constructor(props: BuildingProps) {
     super(props);
-    const elevatorsNumber: number = this.props.numberOfElevators 
+    const elevatorsNumber: number = this.props.numberOfElevators;
     this.state = {
       floors: Array.from(
         { length: this.props.numberOfFloors },
-        (_, index) => index 
-      ),
-      elevators: Array.from(
-        { length: elevatorsNumber },
         (_, index) => index
       ),
-      queueOfElevators: Array.from(
-        { length: elevatorsNumber },
-        () => [0]
-      ),
-      adjustingElevatorWait: Array.from(
-        { length: elevatorsNumber },
-        () => 0
-      ),
+      elevators: Array.from({ length: elevatorsNumber }, (_, index) => index),
+      queueOfElevators: Array.from({ length: elevatorsNumber }, () => [0]),
+      adjustingElevatorWait: Array.from({ length: elevatorsNumber }, () => 0),
       orderedFloor: 0,
       elevatorId: 0,
       floorColor: false,

@@ -19,7 +19,6 @@ export const ElevatorsWrapper = styled.div`
   flex-direction: row;
   justify-content: space-evenly;
   align-items: flex-end;
-  width: auto;
-  padding-left: 40px;
+  /* width: auto; */
 
 `;

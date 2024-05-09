@@ -12,14 +12,14 @@ interface PropsCreator {
 class FloorCreator extends React.Component<PropsCreator> {
   render(): JSX.Element {
     return (
-        <Floor
-          floorId={this.props.floorNumber}
-          isId={this.props.isId}
-          isColor={this.props.isColor}
-          floorNumber={this.props.floorNumber}
-          orderElevator={this.props.orderElevator}
-          timer={this.props.timer}
-        />
+      <Floor
+        floorId={this.props.floorNumber}
+        isId={this.props.isId}
+        isColor={this.props.isColor}
+        floorNumber={this.props.floorNumber}
+        orderElevator={this.props.orderElevator}
+        timer={this.props.timer}
+      />
     );
   }
 }
@@ -79,7 +79,7 @@ class Floor extends React.Component<PropsFloor, State> {
     timerWithDelay();
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <Styles.FloorWrapper>
         <Styles.Floor>

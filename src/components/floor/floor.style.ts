@@ -20,13 +20,6 @@ export const Floor = styled.div`
   justify-content: center;
 `;
 
-export const TopOfTheFloor = styled.div`
-  background-color: #000000;
-  height: 7px;
-  width: 200px;
-  /* left: 20px; */
-`;
-
 export const FloorButton = styled.button<{isColor: boolean}>`
   width: 100px;
   font-size: 4em;
@@ -47,8 +40,8 @@ export const Timer = styled.div`
     height: 40px;
     color: black;
     font-size: 30px;
-    font: bold;
     margin-top: 35px;
     justify-content: center;
     margin-left: 5px;
+    font: bold;
 `;
