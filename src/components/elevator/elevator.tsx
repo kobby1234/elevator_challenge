@@ -57,11 +57,10 @@ class Elevator extends React.Component<ElevatorProps, State> {
     this.modifyElevatorLocation(distance);
   };
 
-  public modifyElevatorLocation = (distance: number): void => {
+  private modifyElevatorLocation = (distance: number): void => {
     const delayBetweenActivations: number = 500;
     let activationsLeft: number = distance;
     let currentFloor: number = this.state.currentFloor;
-
     const activateWithDelay = (): void => {
       if (activationsLeft > 0) {
         if (this.state.isDirection) {

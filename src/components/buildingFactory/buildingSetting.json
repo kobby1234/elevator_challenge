@@ -1,11 +1,12 @@
 [
     {
-        "floors": 6,
-        "elevators": 3
+        "floors": 15,
+        "elevators": 1
     },
     {
-        "floors": 5,
+        "floors": 12,
         "elevators": 3
     }
+    
    
 ]
