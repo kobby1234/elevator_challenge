@@ -23,7 +23,7 @@ export const Floor = styled.div`
   justify-content: center;
 `;
 
-export const FloorButton = styled.button<{isColor: boolean}>`
+export const FloorButton = styled.button<{$isColor: boolean}>`
   width: 100px;
   font-size: 4em;
   height: 80px;
@@ -32,7 +32,7 @@ export const FloorButton = styled.button<{isColor: boolean}>`
                     -webkit-repeating-linear-gradient(left, hsla(0,0%, 0%,0) 0%, hsla(0,0%, 0%,0) 4%, hsla(0,0%, 0%,.03) 4.5%), 
                     -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.15) 2.2%), 
                     linear-gradient(180deg, hsl(0,0%,78%) 0%, hsl(0,0%,90%) 47%, hsl(0,0%,78%) 53%, hsl(0,0%,70%)100%);
-  color: ${props => (props.isColor ? '#008000'  : '#000')};
+  color: ${props => (props.$isColor ? '#008000'  : '#000')};
   justify-content: center;
   cursor: pointer;
 `;

@@ -27,7 +27,6 @@ class BuildingsFactory extends React.Component<{}, State> {
   }
 
   componentDidMount() {
-    // Scroll window down when the component mounts
     window.scrollTo(0, document.body.scrollHeight);
   }
 

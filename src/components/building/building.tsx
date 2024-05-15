@@ -71,7 +71,7 @@ class Building extends React.Component<BuildingProps, BuildingState> {
         floorNumber={this.state.orderedFloor}
         elevatorId={index}
         isId={this.state.elevatorId}
-        modifyCurrentElevator={this.manageElevatorQueue}
+        manageElevatorQueue={this.manageElevatorQueue}
       />
     ));
   };
@@ -113,8 +113,8 @@ class Building extends React.Component<BuildingProps, BuildingState> {
    * - sets "adjustingElevatorWait" to zero
    * - remove the floor from elevator queue
    * - if there is a floor waiting in the queue activates the elevator
-   * @param floor 
-   * @param elevatorId 
+   * @param floor
+   * @param elevatorId
    */
   private manageElevatorArrival = (floor: number, elevatorId: number): void => {
     setTimeout(() => {

@@ -32,6 +32,7 @@ interface PropsFloor {
   timer: number;
   orderElevator: (floor: number) => void;
 }
+
 interface State {
   isColor: boolean;
   floorId: number;
@@ -60,6 +61,10 @@ class Floor extends React.Component<PropsFloor, State> {
     }
   }
 
+  /**
+   * modify the timer every one second
+   * - if half second left it modify in half second
+   */
   private modifyTimer = (): void => {
     let delay: number = 1000;
     let timerLeft: number = this.props.timer;
@@ -84,7 +89,7 @@ class Floor extends React.Component<PropsFloor, State> {
       <Styles.FloorWrapper>
         <Styles.Floor>
           <Styles.FloorButton
-            isColor={this.state.isColor}
+            $isColor={this.state.isColor}
             onClick={() => this.props.orderElevator(this.props.floorNumber)}
           >
             {this.props.floorNumber}

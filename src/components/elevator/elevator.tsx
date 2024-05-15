@@ -9,18 +9,20 @@ class ElevatorCreator extends React.Component<ElevatorProps> {
           floorNumber={this.props.floorNumber}
           elevatorId={this.props.elevatorId}
           isId={this.props.isId}
-          modifyCurrentElevator={this.props.modifyCurrentElevator}
+          manageElevatorQueue={this.props.manageElevatorQueue}
         />
       </>
     );
   }
 }
+
 interface ElevatorProps {
   floorNumber: number;
   elevatorId: number;
   isId: number;
-  modifyCurrentElevator: (floor: number, elvId: number) => void;
+  manageElevatorQueue: (floor: number, elvId: number) => void;
 }
+
 interface State {
   top: number;
   floorNumber: number;
@@ -57,6 +59,9 @@ class Elevator extends React.Component<ElevatorProps, State> {
     this.modifyElevatorLocation(distance);
   };
 
+  /**
+   * updating the location of the elevator in delay of half second
+   */
   private modifyElevatorLocation = (distance: number): void => {
     const delayBetweenActivations: number = 500;
     let activationsLeft: number = distance;
@@ -68,7 +73,7 @@ class Elevator extends React.Component<ElevatorProps, State> {
         } else {
           currentFloor--;
         }
-        this.props.modifyCurrentElevator(currentFloor, this.state.elevatorId);
+        this.props.manageElevatorQueue(currentFloor, this.state.elevatorId);
         activationsLeft--;
         setTimeout(activateWithDelay, delayBetweenActivations);
       }
@@ -76,6 +81,10 @@ class Elevator extends React.Component<ElevatorProps, State> {
     setTimeout(activateWithDelay, delayBetweenActivations);
   };
 
+  /**
+   * move the elevator by setting new position
+   * @returns the gap between the two floors
+   */
   private movesElevator = (): number => {
     const floorDeparture: number = this.state.currentFloor;
     const floorArrival: number = this.props.floorNumber;
@@ -100,6 +109,7 @@ class Elevator extends React.Component<ElevatorProps, State> {
 
     return distance;
   };
+
   render(): JSX.Element {
     return (
       <Styles.Elevator
